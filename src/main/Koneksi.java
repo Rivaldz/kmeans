@@ -15,7 +15,7 @@ public class Koneksi {
   private String port = "5432/"; // Port Default PostgreSQL  
   private String database = "dataset"; // Ini Database yang akan digunakan  
   private String url = jdbc + host + port + database;  
-  private String username = ""; //  
+  private String username = "postgres"; //  
   private String password = "";  
 
   public Connection getKoneksi() throws SQLException {  
