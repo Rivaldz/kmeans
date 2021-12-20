@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import main.DataSet.Record;
 
@@ -79,7 +81,8 @@ public class KMeans {
     public static void main(String[] args) throws SQLException {
         Koneksi koneksi = new Koneksi();
         koneksi.getKoneksi();
-        
+        koneksi.queryData();
+
         try {
             // read data
             DataSet data = new DataSet("files/sample.csv");//buat baca nama file -> ini diubah jadi baca ke postgresql
