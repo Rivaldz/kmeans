@@ -78,7 +78,7 @@ public class KMeans {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException {
         Koneksi koneksi = new Koneksi();
         koneksi.getKoneksi();
         koneksi.queryData();

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.io.*;
 
 public class Koneksi {
   // public Koneksi() {
@@ -20,6 +21,7 @@ public class Koneksi {
   private String url = jdbc + host + port + database;  
   private String username = "postgres"; //  
   private String password = "";  
+  private String csvFilePath = "files/sample.csv";
 
   public Connection getKoneksi() throws SQLException {  
     if (connect == null) {  
@@ -40,35 +42,42 @@ public class Koneksi {
     }  
     return connect;  
   }  
-  public void queryData(){
+  public void queryData() throws IOException{
+    System.out.println("Mengambil Data Dari Database");  
     try {
       stmt = connect.createStatement();
       String sql = "SELECT * FROM vw_hasil_normalisasi_min_max_latihan";
       ResultSet rs = stmt.executeQuery(sql);
+      BufferedWriter fileWriter = new BufferedWriter(new FileWriter(csvFilePath));
+      fileWriter.write("Class,normalisasi_frekuensi,normalisasi_total");
+
       while (rs.next()) {
         int id = rs.getInt("tbmm_id");
-        Float frekuensi= rs.getFloat("normalisasi_frekuensi");
-        Float total = rs.getFloat("normalisasi_total");
-        // int age  = rs.getInt("age");
-        // String  address = rs.getString("address");
-        // float salary = rs.getFloat("salary");
+        Double frekuensi= rs.getDouble("normalisasi_frekuensi");
+        Double total = rs.getDouble("normalisasi_total");
+
+       
+      String line = String.format("%d,%f,%f",
+              id, frekuensi, total);
+      fileWriter.newLine();
+      fileWriter.write(line);
+
         System.out.println( "ID = " + id );
         System.out.println( "NAME = " + frekuensi);
         System.out.println( "AGE = " + total );
-        // System.out.println( "ADDRESS = " + address );
-        // System.out.println( "SALARY = " + salary );
         System.out.println(); 
       }
       rs.close();
       stmt.close();
       connect.close();
+      fileWriter.close();
+
     } catch (SQLException e) {
       System.err.println( e.getClass().getName()+": "+ e.getMessage() );
       System.exit(0);
 
     }
     System.out.println("Operation done successfully");
-
 
   }
 }  
