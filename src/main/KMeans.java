@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Scanner; 
 
 import main.DataSet.Record;
 
@@ -79,6 +80,12 @@ public class KMeans {
     }
 
     public static void main(String[] args) throws SQLException, IOException {
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+        System.out.print("Masukan Nilai K = ");
+    
+        int nilaiK = myObj.nextInt();  // Read user input
+        System.out.println("Hasil Input Nilai K: " + nilaiK);  // Output user input
+
         Koneksi koneksi = new Koneksi();
         koneksi.getKoneksi();
         koneksi.queryData();
@@ -91,7 +98,7 @@ public class KMeans {
             data.removeAttr("Class");
 
             // cluster
-            kmeans(data, 2);//cluster 2 masih manual bisa dibuat inputan 2 3 4 5 dst.
+            kmeans(data, nilaiK);//cluster 2 masih manual bisa dibuat inputan 2 3 4 5 dst.
 
             // output into a csv
             data.createCsvOutput("files/sampleClustered.csv");//output-> outputnya jadi tulis ke postgresql
@@ -99,6 +106,8 @@ public class KMeans {
         } catch (IOException e){
             e.printStackTrace();
         }
+
+        koneksi.insertData();
     }
 
 }
