@@ -92,7 +92,7 @@ public class KMeans {
 
         try {
             // read data
-            DataSet data = new DataSet("files/sample.csv");//buat baca nama file -> ini diubah jadi baca ke postgresql
+            DataSet data = new DataSet();//buat baca nama file -> ini diubah jadi baca ke postgresql
 
             // remove prior classification attr if it exists (input any irrelevant attributes)
             data.removeAttr("Class");

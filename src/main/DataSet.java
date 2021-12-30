@@ -42,9 +42,6 @@ public class DataSet {
     private String url = jdbc + host + port + database;  
     private String username = "postgres"; //  
     private String password = "";  
-    private String csvFilePath = "files/sample.csv";
-    private String csvFilePathInsert = "files/sampleClustered.csv";
-    private int batchSize = 20;
     public Connection getKoneksi() throws SQLException {  
         if (connect == null) {  
           try {  
@@ -72,7 +69,7 @@ public class DataSet {
     private final HashMap<String, Double> maximums = new HashMap<>();
     private static final Random random = new Random();
 
-    public DataSet(String csvFileName) throws IOException, SQLException {
+    public DataSet() throws IOException, SQLException {
     getKoneksi();
     
     attrNames.push("normalisasi_total");
@@ -82,69 +79,14 @@ public class DataSet {
     try {
       stmt = connect.createStatement();
       String sql = "SELECT * FROM vw_hasil_normalisasi_min_max_latihan";
-
-      String sqlMinClass = "SELECT MIN (tbmm_id)FROM vw_hasil_normalisasi_min_max_latihan;";
-      String sqlMinFrekuensi = "SELECT MIN (normalisasi_frekuensi)FROM vw_hasil_normalisasi_min_max_latihan;";
-      String sqlMinTotal = "SELECT MIN (normalisasi_total)FROM vw_hasil_normalisasi_min_max_latihan;";
-
-      String sqlMaxClass = "SELECT MAX (tbmm_id)FROM vw_hasil_normalisasi_min_max_latihan;";
-      String sqlMaxFrekuensi = "SELECT MAX (normalisasi_frekuensi)FROM vw_hasil_normalisasi_min_max_latihan;";
-      String sqlMaxTotal = "SELECT MAX (normalisasi_total)FROM vw_hasil_normalisasi_min_max_latihan;";
-
       ResultSet rs = stmt.executeQuery(sql);
 
-    //   ResultSet rsMin = stmt.executeQuery(sqlMinClass);
-    //   while (rsMin.next()) {
-    //     minimums.put("Class", rsMin.getDouble("min"));
-    //   }
-    //   ResultSet rsMinFrek = stmt.executeQuery(sqlMinFrekuensi);
-    //   while(rsMinFrek.next()){
-    //     minimums.put("normalisasi_frekuensi", rsMinFrek.getDouble("min"));
-    //   }
-    //   ResultSet rsMinTot = stmt.executeQuery(sqlMinTotal);
-    //   while (rsMinTot.next()) {
-    //     minimums.put("normalisasi_total", rsMinTot.getDouble("min"));
-    //   }
-
-    //   ResultSet rsMax = stmt.executeQuery(sqlMaxClass);
-    //   while(rsMax.next()){
-    //     maximums.put("Class", rsMax.getDouble("max"));
-    //   }
-    //   ResultSet rsMaxFrek = stmt.executeQuery(sqlMaxFrekuensi);
-    //   while (rsMaxFrek.next()) {
-    //     maximums.put("normalisasi_frekuensi", rsMaxFrek.getDouble("max"));
-    //   }
-    //   ResultSet rsMaxTot = stmt.executeQuery(sqlMaxTotal);
-    //   while (rsMaxTot.next()) {
-    //     maximums.put("normalisasi_total",rsMaxTot.getDouble("max") );
-    //   }
-    //   BufferedWriter fileWriter = new BufferedWriter(new FileWriter(csvFilePath));
-    //   fileWriter.write("Class,normalisasi_frekuensi,normalisasi_total");
-       int size = 0;
       while (rs.next()) {
-      HashMap<String, Double> record = new HashMap<>();
-        //   rs.last();
-        //   size = rs.getRow();
-        //   System.out.println(" Panjang roww" + size);
-        //   for (int i = 1; i < size ; i++) {
-                 
-        //   }
-          int id = rs.getInt("tbmm_id");
-          Double frekuensi= rs.getDouble("normalisasi_frekuensi");
-          Double total = rs.getDouble("normalisasi_total");
+            HashMap<String, Double> record = new HashMap<>();
+            int id = rs.getInt("tbmm_id");
+            Double frekuensi= rs.getDouble("normalisasi_frekuensi");
+            Double total = rs.getDouble("normalisasi_total");
 
-        //   String line = String.format("%d,%f,%f",
-        //                 id, frekuensi, total);
-        //   fileWriter.newLine();
-        //   fileWriter.write(line);
-
-          System.out.println("Lihat Rs");
-
-          System.out.println( "class = " + id );
-          System.out.println( "normalisasi frekuensi  = " + frekuensi);
-          System.out.println( "normalisasi total = " + total );
-          System.out.println();
-            
             Double idCast = (double) id;
             record.put("Class", idCast);
             record.put("normalisasi_frekuensi", frekuensi);
@@ -158,79 +100,14 @@ public class DataSet {
             updateMax("normalisasi_frekuensi", frekuensi);
             updateMax("normalisasi_total", total);
 
-            // minimums.put("Class", idCast);
-            // minimums.put("normalisasi_frekuensi", frekuensi);
-            // minimums.put("normalisasi_total", total);
-
-            // maximums.put("Class", idCast);
-            // maximums.put("normalisasi_frekuensi", frekuensi);
-            // maximums.put("normalisasi_total", total);
- 
-            // updateMin("Class", idCast);
-            // updateMin("normalisasi_frekuensi", frekuensi);
-            // updateMin("normalisasi_total", total);
-
-            // updateMax("Class", idCast);
-            // updateMax("normalisasi_frekuensi", frekuensi);
-            // updateMax("normalisasi_total", total);
-       // System.out.println("record --> " + name + "[]" + val );
-        // updateMin(name, val);
-        // System.out.println("update Min " + name + "[]" + val );
-        // updateMax(name, val);
-        // System.out.println("update Max " + name + "[]" + val );
-
-        records.add(new Record(record));
+            records.add(new Record(record));
         }
-
-      // rs.close();
-      // stmt.close();
-      // connect.close();
-    //   fileWriter.close();
 
     } catch (SQLException e) {
       System.err.println( e.getClass().getName()+": "+ e.getMessage() );
       System.exit(0);
 
     }
-
-       /* String row;
-       try(BufferedReader csvReader = new BufferedReader(new FileReader(csvFileName))) {
-            if((row = csvReader.readLine()) != null){
-                String[] data = row.split(",");
-                Collections.addAll(attrNames, data);
-            }
-
-            while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-
-                HashMap<String, Double> record = new HashMap<>();
-                System.out.println("----------------------------");
-
-                if(attrNames.size() == data.length) {
-                    for (int i = 0; i < attrNames.size(); i++) {
-                        String name = attrNames.get(i);
-                        double val = Double.parseDouble(data[i]);
-                        record.put(name, val);
-                        System.out.println("record --> " + name + "[]" + val );
-                        updateMin(name, val);
-                        System.out.println("update Min " + name + "[]" + val );
-                        updateMax(name, val);
-                        System.out.println("update Max " + name + "[]" + val );
-                    }
-                } else{
-                    throw new IOException("Incorrectly formatted file.");
-                }
-
-                records.add(new Record(record));
-            }
-
-        }
-        showHasilHash(); */
-        // for (int i = 0; i < minimums.size(); i++) {
-        //    System.out.println("Lihat MINIMUS mas brow " + minimums.get(i)); 
-        // }
-            
-
         showHasilHash();
     }
 
