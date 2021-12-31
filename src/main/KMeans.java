@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
-// import java.sql.ResultSet;
-// import java.sql.Statement;
 import java.util.Scanner; 
 
 import main.DataSet.Record;
@@ -80,15 +78,6 @@ public class KMeans {
     }
 
     public static void main(String[] args) throws SQLException, IOException {
-        // Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-        // System.out.print("Masukan Nilai K = ");
-    
-        // int nilaiK = myObj.nextInt();  // Read user input
-        // System.out.println("Hasil Input Nilai K: " + nilaiK);  // Output user input
-
-        // Koneksi koneksi = new Koneksi();
-        // koneksi.getKoneksi();
-        // koneksi.queryData();
 
         try {
             // read data
@@ -99,15 +88,13 @@ public class KMeans {
 
             // cluster
             kmeans(data, 2);//cluster 2 masih manual bisa dibuat inputan 2 3 4 5 dst.
-
             // output into a csv
-            data.createCsvOutput("files/sampleClustered.csv");//output-> outputnya jadi tulis ke postgresql
+            data.createCsvOutput();//output-> outputnya jadi tulis ke postgresql
 
         } catch (IOException e){
             e.printStackTrace();
         }
 
-        // koneksi.insertData();
     }
 
 }

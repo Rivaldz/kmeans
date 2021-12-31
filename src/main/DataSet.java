@@ -1,11 +1,9 @@
 package main;
 
 import java.io.*;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.function.DoubleBinaryOperator;
 import java.sql.Connection;  
 import java.sql.DriverManager;  
 import java.sql.SQLException;
@@ -34,7 +32,6 @@ public class DataSet {
     private Connection connect;
     private Statement stmt = null;
     private String driverName = "org.postgresql.Driver"; // Driver Untuk Koneksi Ke PostgreSQL  
-    // private String driverName = "kluster"; // Driver Untuk Koneksi Ke PostgreSQL  
     private String jdbc = "jdbc:postgresql://";  
     private String host = "localhost:"; // Host ini Bisa Menggunakan IP Anda, Contoh : 192.168.100.100  
     private String port = "5432/"; // Port Default PostgreSQL  
@@ -107,43 +104,21 @@ public class DataSet {
       System.err.println( e.getClass().getName()+": "+ e.getMessage() );
       System.exit(0);
 
-    }
-        showHasilHash();
+        }
     }
 
-    public void createCsvOutput(String outputFileName) throws SQLException{
+    public void createCsvOutput() throws SQLException{
         stmt = connect.createStatement();
-        // String sql = "INSERT INTO Result_Counting (ID,NAME,AGE,ADDRESS,SALARY) "
-        //    + "VALUES (1, 'Paul', 32, 'California', 20000.00 );";
-
-        try(BufferedWriter csvWriter = new BufferedWriter(new FileWriter(outputFileName))) {
-            for(int i=0; i<attrNames.size(); i++){
-                csvWriter.write(attrNames.get(i));
-                csvWriter.write(",");
-            }
-
-            csvWriter.write("ClusterId");
-            csvWriter.write("\n");
             System.out.println("20. Cek ini"+records.getFirst().getRecord());
             for(var record : records){
-                for(int i=0; i<attrNames.size(); i++){
-                    csvWriter.write(String.valueOf(record.getRecord().get(attrNames.get(i))));
-                    System.out.println("000 ini adalah hasil record " + String.valueOf(record.getRecord().get(attrNames.get(i))));
-                    csvWriter.write(",");
-                }
                 Double normalisasi_frekuensi_db = record.getRecord().get("normalisasi_frekuensi");
                 Double normalisasi_total_db = record.getRecord().get("normalisasi_total");
                 Integer clusterNumber = record.clusterNo;
                 Double parseDouble = (double)clusterNumber; 
-                csvWriter.write(String.valueOf(record.clusterNo));
                 String sqlInsert = "INSERT INTO Result_Counting(normalisasi_frekuensi,normalisasi_total,clusterid) VALUES ('"+normalisasi_frekuensi_db+"','"+normalisasi_total_db+"','"+parseDouble+"')";
                 stmt.executeUpdate(sqlInsert);
-                // System.out.println("000 ini adalah hasil record CLUSTER NO" + String.valueOf(String.valueOf(record.clusterNo)));
-                csvWriter.write("\n");
+
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void updateMin(String name, Double val){
@@ -165,23 +140,6 @@ public class DataSet {
             }
         } else{
             maximums.put(name, val);
-        }
-    }
-    private void showHasilHash(){
-        minimums.forEach((K,V) -> System.out.println(K + ", Minimus : " + V));
-        maximums.forEach((K,V) -> System.out.println(K + ", Maximus : " + V));
-        System.out.println("this of record RRRRRRR");
-         for (int i = 0; i < records.size(); i++) {
-           System.out.println("Lihat RECORD mas brow " + records.get(i).getRecord()); 
-        }
-
-        System.out.println("this of attrAAAAAAA");
-        for (int i = 0; i < attrNames.size(); i++) {
-           System.out.println("Lihat ATTR mas brow " + attrNames.get(i)); 
-        }
-        System.out.println("this of indicesSSSSS");
-        for (int i = 0; i < indicesOfCentroids.size(); i++) {
-           System.out.println("Lihat indicessss mas brow " + indicesOfCentroids.get(i)); 
         }
     }
 
