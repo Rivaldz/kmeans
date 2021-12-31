@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
-
+import java.util.function.DoubleBinaryOperator;
 import java.sql.Connection;  
 import java.sql.DriverManager;  
 import java.sql.SQLException;
@@ -111,7 +111,10 @@ public class DataSet {
         showHasilHash();
     }
 
-    public void createCsvOutput(String outputFileName){
+    public void createCsvOutput(String outputFileName) throws SQLException{
+        stmt = connect.createStatement();
+        // String sql = "INSERT INTO Result_Counting (ID,NAME,AGE,ADDRESS,SALARY) "
+        //    + "VALUES (1, 'Paul', 32, 'California', 20000.00 );";
 
         try(BufferedWriter csvWriter = new BufferedWriter(new FileWriter(outputFileName))) {
             for(int i=0; i<attrNames.size(); i++){
@@ -125,9 +128,17 @@ public class DataSet {
             for(var record : records){
                 for(int i=0; i<attrNames.size(); i++){
                     csvWriter.write(String.valueOf(record.getRecord().get(attrNames.get(i))));
+                    System.out.println("000 ini adalah hasil record " + String.valueOf(record.getRecord().get(attrNames.get(i))));
                     csvWriter.write(",");
                 }
+                Double normalisasi_frekuensi_db = record.getRecord().get("normalisasi_frekuensi");
+                Double normalisasi_total_db = record.getRecord().get("normalisasi_total");
+                Integer clusterNumber = record.clusterNo;
+                Double parseDouble = (double)clusterNumber; 
                 csvWriter.write(String.valueOf(record.clusterNo));
+                String sqlInsert = "INSERT INTO Result_Counting(normalisasi_frekuensi,normalisasi_total,clusterid) VALUES ('"+normalisasi_frekuensi_db+"','"+normalisasi_total_db+"','"+parseDouble+"')";
+                stmt.executeUpdate(sqlInsert);
+                // System.out.println("000 ini adalah hasil record CLUSTER NO" + String.valueOf(String.valueOf(record.clusterNo)));
                 csvWriter.write("\n");
             }
         } catch (IOException e) {
